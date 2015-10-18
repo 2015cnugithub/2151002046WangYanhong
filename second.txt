@@ -1,0 +1,232 @@
+1.
+#include <iostream>
+    #include <string.h>
+    using namespace std;
+    class CGoods
+    {
+    private:
+        long no;
+        char *p_name;
+        //float price;
+        double price
+    public:
+        CGoods(long no_val, char *p_val, double price_val);
+        CGoods(const CGoods &r_goods);
+        ~CGoods() { delete p_name; }
+        void print() const;
+    };
+
+    CGoods::CGoods(long no_val, char *p_val, double price_val)
+    {
+        no = no_val;
+        p_name = new char[strlen(p_val)+1];
+        strcpy(p_name, p_val);
+        price = price_val;
+    }
+
+    CGoods::CGoods(const CGoods &r_goods)
+    {
+        no = r_goods.no;
+        p_name = new char[strlen(r_goods.p_name)+1];
+        strcpy(p_name, r_goods.p_name);
+        price = r_goods.price;
+    }
+
+    void CGoods::print() const
+    {
+        cout << "goods number: " << no << endl;
+        cout << "goods name: " << p_name << endl;
+        cout << "goods price: " << price << endl;
+}
+
+2.
+ #include <iostream>
+    #include <string.h>
+    using namespace std;
+    class CGoods
+    {
+    private:
+        long no;
+        char *p_name;
+        //float price;
+        double price
+    private:
+        static int count;
+    public:
+        CGoods(long no_val, char *p_val, double price_val);
+        CGoods(const CGoods &r_goods);
+        ~CGoods() { delete p_name; count--;}
+        void print() const;
+    public:
+        static getCount() { return count; }
+    friend char *getName(const CGoods &r_goods);
+    };
+    int CGoods::count = 0;
+
+    CGoods::CGoods(long no_val, char *p_val, double price_val)
+    {
+        no = no_val;
+        p_name = new char[strlen(p_val)+1];
+        strcpy(p_name, p_val);
+        price = price_val;
+        count++;
+    }
+
+    CGoods::CGoods(const CGoods &r_goods)
+    {
+        no = r_goods.no;
+        p_name = new char[strlen(r_goods.p_name)+1];
+        strcpy(p_name, r_goods.p_name);
+        price = r_goods.price;
+        count++;
+    }
+
+    void CGoods::print() const
+    {
+        cout << "goods number: " << no << endl;
+        cout << "goods name: " << p_name << endl;
+        cout << "goods price: " << price << endl;
+    }
+char *getName(const CGoods &r_goods)
+    {
+              return r_goods.p_name;
+    }
+3.
+ #include <iostream>
+    #include <string.h>
+    using namespace std;
+    class CGoods
+    {
+    private:
+        long no;
+        char *p_name;
+        //float price;
+        double price
+        static int count;
+    public:
+        CGoods(long no_val, char *p_val, double price_val);
+        CGoods(const CGoods &r_goods);
+        ~CGoods() { delete p_name; count--;}
+        void print() const;
+        bool operator <(const CGoods &r_goods);
+        static getCount() { return count; }
+        bool operator >=(const CGoods &r_goods);
+    friend char *getName(const CGoods &r_goods);
+    };
+    int CGoods::count = 0;
+
+    CGoods::CGoods(long no_val, char *p_val, double price_val)
+    {
+        no = no_val;
+        p_name = new char[strlen(p_val)+1];
+        strcpy(p_name, p_val);
+        price = price_val;
+        count++;
+    }
+
+    CGoods::CGoods(const CGoods &r_goods)
+    {
+        no = r_goods.no;
+        p_name = new char[strlen(r_goods.p_name)+1];
+        strcpy(p_name, r_goods.p_name);
+        price = r_goods.price;
+        count++;
+    }
+
+    void CGoods::print() const
+    {
+        cout << "goods number: " << no << endl;
+        cout << "goods name: " << p_name << endl;
+        cout << "goods price: " << price << endl;
+}
+bool CGoods::operator <(const CGoods &r_goods)
+    {
+        if (price < r_goods.price)
+            return true;
+        else
+            return false;
+}
+bool CGoods::operator >=(const CGoods &r_goods)
+    {
+        if (price >= r_goods.price)
+            return true;
+        else
+            return false;
+    }
+
+
+char *getName(const CGoods &r_goods)
+    {
+              return r_goods.p_name;
+    }
+4.
+class CClothes : public CGoods
+    {
+    private:
+        char *p_brand;
+    public:
+        CClothes(long no_val, char *p_val, double price_val, char *p_br) : CGoods(no_val, p_val, price_val)
+        { 
+            p_brand = new char[strlen(p_br)+1];
+            strcpy(p_brand, p_br);
+        }
+        ~CClothes() { delete p_brand; }
+        void usedFor() { cout << "Used for dress" << endl; }
+    };
+
+
+class CFood : public CGoods
+    {
+    private:
+        char *p_brand;
+    public:
+        CFood(long no_val, char *p_val, double price_val, char *p_br) : CGoods(no_val, p_val, price_val)
+        { 
+            p_brand = new char[strlen(p_br)+1];
+            strcpy(p_brand, p_br);
+        }
+        ~CFood() { delete p_brand; }
+        void usedFor() { cout << "Used for eat" << endl; }
+    };
+5.
+在class CGoods定义中增加一条：
+       public:
+           virtual void usedFor() { cout << "used for dress\n"; }
+
+
+    增加：
+    #include <stdlib.h>
+
+    主函数可定义为：
+    void main()
+    {
+    char choice, instructor[10];
+    double price;
+    long id;
+    CGoods *p_goods;
+     
+        cout << "Select goods:\n";
+        cout << "1. for dress\n";
+        cout << "2. for eat\n";
+        cin >> choice;
+        cout << "Enter goods number: ";
+        cin >> id;
+        cout << "Enter price: ";
+        cin >> price;
+        cout << "Enter instructor name: ";
+        cin >> instructor;
+
+        switch (choice)
+        {
+         case '1':
+             p_goods = new CClothes(id, "裤子", price, instructor);
+             break;
+         case '2':
+             p_goods = new CFood(id, "面包", price, instructor);
+             break;
+         default:
+             exit(0);
+        }
+        p_goods->usedFor();
+        delete p_goods;
+    }
