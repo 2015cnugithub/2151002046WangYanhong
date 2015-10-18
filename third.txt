@@ -1,0 +1,81 @@
+#include <iostream>
+#include <string>
+using namespace::std;
+
+class Worker{
+protected:
+	string name;
+	int age;
+	string sex;
+	double pay_per_hour;
+public:
+	void xyz(string a, int b, string c, double pay){
+		name = a;
+		age = b;
+		sex = c;
+		pay_per_hour = pay;
+	}
+	virtual void Comput_pay(double hours){
+	}
+	friend ostream& operator<<(ostream& out, Worker& worker){
+		return out << "名字:" << worker.name << " 年龄:" << worker.age <<
+			" 性别:" << worker.sex <<  " 时薪:" << worker.pay_per_hour << endl;
+	}
+	void Name(){
+		cout << name << endl;
+	}
+};
+
+class HourlyWorker : public Worker{
+public:
+	void Comput_pay(double hours){
+		double pay;
+		if (hours < 40) pay = pay_per_hour*hours;
+		else pay = pay_per_hour * 40 + 1.5*pay_per_hour*(hours - 40);
+		cout << "周薪是 " << pay << endl;
+	}
+};
+
+class SalariedWorker : public Worker{
+public:
+	void Comput_pay(double hours){
+		double pay;
+		if (hours < 35) pay = pay_per_hour*hours + 0.5*pay_per_hour*(35 - hours);
+		else pay = pay_per_hour * 40;
+		cout << "周薪是 " << pay << endl;
+	}
+};
+
+void main(){
+	Worker* workers[5];
+	for (int i = 0; i < 5; i++){
+		string name;
+		int age;
+		string sex;
+		double pay;
+		cout << "Please enter the name,age,sex,pay per hour:";
+		cin >> name >> age >> sex >> pay;
+		if (pay == 10 || pay == 20 || pay == 40) workers[i] = new HourlyWorker;
+		else if(pay==30||pay==50) workers[i] = new SalariedWorker;
+		else {
+			cout << "错误!";
+			return;
+		}
+		workers[i]->xyz(name, age, sex, pay);
+	}
+	cout << "名字" << endl;
+	for (int i = 0; i < 5; i++){
+		cout << i + 1 << " ";
+		workers[i]->Name();
+	}
+	cout << "输入编号:";
+	int number;
+	cin >> number;
+	cout << *workers[number-1];
+	cout << "输入一周工作小时数:";
+	double h;
+	cin >> h;
+	workers[number]->Comput_pay(h);
+	system("pause");
+}
+
